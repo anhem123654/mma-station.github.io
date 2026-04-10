@@ -826,7 +826,7 @@
                 document.getElementById('hidden-ai').value = "Selected Goal: " + goal;
 
                 // Fire Fetch to Google Sheet
-                if(SCRIPT_URL && SCRIPT_URL !== 'DÁN_LINK_GOOGLE_APP_SCRIPT_CỦA_BẠN_VÀO_ĐÂY') {
+                if(SCRIPT_URL && SCRIPT_URL !== 'https://script.google.com/macros/library/d/1JN9v74PDvZuMtR_A9jkBmTVEm_iMWl22-TnSGPtSG1cTGI8dehzIZEFQ/2') {
                     fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form)})
                         .catch(err => console.error("Sheet Error: ", err));
                 } else {
