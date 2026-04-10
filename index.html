@@ -9,41 +9,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ff0000;
+            --primary: #dc2626; /* Tailwind red-600 */
             --dark: #050505;
             --surface: #121212;
         }
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; background-color: var(--dark); color: white; }
-        h1, h2, h3, h4 { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: -0.02em; }
+        h1, h2, h3, h4, .font-oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: -0.02em; }
         
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .mma-shadow { box-shadow: 0 0 30px rgba(255, 0, 0, 0.15); }
+        .glass { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .mma-shadow { box-shadow: 0 0 40px rgba(220, 38, 38, 0.2); }
+        .clip-slant { clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%); }
+        .bg-pattern { background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 30px 30px; }
         
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--dark); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        .image-zoom:hover img { transform: scale(1.1); }
         .nav-link::after { content: ''; display: block; width: 0; height: 2px; background: var(--primary); transition: width .3s; }
         .nav-link:hover::after { width: 100%; }
 
         /* Lightbox Overlay */
-        #lightbox {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            align-items: center;
-            justify-content: center;
-            cursor: zoom-out;
-        }
+        #lightbox { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; cursor: zoom-out; }
         #lightbox img { max-width: 90%; max-height: 80vh; border: 2px solid #333; border-radius: 4px; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+
+        /* AI Scan Animation */
+        .scan-line { width: 100%; height: 2px; background: var(--primary); position: absolute; top: 0; left: 0; animation: scan 1.5s infinite linear; box-shadow: 0 0 10px var(--primary); display: none; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .fire-border { position: relative; }
+        .fire-border::before { content: ""; position: absolute; inset: -2px; background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000); background-size: 400%; z-index: -1; filter: blur(5px); animation: glowing 20s linear infinite; opacity: 0; transition: opacity .3s ease-in-out; border-radius: 8px; }
+        .fire-border:hover::before { opacity: 0.5; }
+        @keyframes glowing { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
     </style>
 </head>
 <body class="overflow-x-hidden">
@@ -58,66 +59,73 @@
     <nav class="fixed w-full z-[100] transition-all duration-300 py-4" id="mainNav">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg rotate-45 bg-red-600">
+                <div class="w-10 h-10 flex items-center justify-center rounded-lg rotate-45 bg-red-600">
                     <i class="fas fa-fist-raised text-white -rotate-45 text-xl"></i>
                 </div>
-                <span class="text-2xl font-black italic tracking-tighter uppercase">MMA<span class="text-red-600">DANANG</span></span>
+                <span class="text-2xl font-black italic tracking-tighter uppercase font-oswald">MMA<span class="text-red-600">DANANG</span></span>
             </div>
             
-            <div class="hidden lg:flex items-center gap-10 font-bold uppercase text-[11px] tracking-[0.2em]">
-                <a href="#home" class="nav-link hover:text-red-600 transition">Trang chủ</a>
-                <a href="#gallery" class="nav-link hover:text-red-600 transition">Album ảnh</a>
-                <a href="#services" class="nav-link hover:text-red-600 transition">Bộ môn</a>
-                <a href="#pricing" class="nav-link hover:text-red-600 transition">Gói tập</a>
-                <a href="#calculator" class="bg-red-600 px-6 py-3 rounded-full hover:bg-white hover:text-black transition-all duration-300 mma-shadow">Tập thử miễn phí</a>
+            <div class="hidden lg:flex items-center gap-8 font-bold uppercase text-[11px] tracking-[0.2em]">
+                <a href="#home" class="nav-link hover:text-red-600 transition" data-i18n="nav_home">Trang chủ</a>
+                <a href="#gallery" class="nav-link hover:text-red-600 transition" data-i18n="nav_gallery">Album ảnh</a>
+                <a href="#services" class="nav-link hover:text-red-600 transition" data-i18n="nav_services">Đào tạo</a>
+                <a href="#pricing" class="nav-link hover:text-red-600 transition" data-i18n="nav_pricing">Gói tập & Menu</a>
+                
+                <!-- Language Toggle -->
+                <div class="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1 ml-4 border border-white/20">
+                    <button onclick="setLang('vi')" id="btn-vi" class="text-red-500 transition">VI</button>
+                    <span class="text-zinc-600">|</span>
+                    <button onclick="setLang('en')" id="btn-en" class="text-zinc-500 hover:text-white transition">EN</button>
+                </div>
+
+                <a href="#calculator" class="bg-red-600 px-6 py-3 rounded-sm hover:bg-white hover:text-black transition-all duration-300 mma-shadow" data-i18n="nav_trial">Đăng ký Tập thử</a>
             </div>
             
             <button class="lg:hidden text-2xl" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
         </div>
     </nav>
 
-    <!-- Hero Section (Dùng Video Thực Tế) -->
-    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-black">
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-black clip-slant pb-20">
         <div class="absolute inset-0 z-0">
-            <!-- Tích hợp Video nền -->
-            <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60 scale-105" poster="https://images.unsplash.com/photo-1595078475328-1ab05d0a6a0e?auto=format&fit=crop&q=80&w=1920">
+            <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-50 scale-105" poster="https://images.unsplash.com/photo-1595078475328-1ab05d0a6a0e?auto=format&fit=crop&q=80&w=1920">
                 <source src="pWF2AmF0GwAAAZ12WYagYWYAYXUOYXMaAHdVwQ.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
+            <div class="absolute inset-0 bg-pattern opacity-30"></div>
         </div>
 
         <div class="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-12">
             <div class="reveal">
-                <div class="inline-flex items-center gap-3 px-4 py-2 border border-red-600/30 rounded-full bg-red-600/10 mb-8 backdrop-blur-sm">
+                <div class="inline-flex items-center gap-3 px-4 py-2 border border-red-600/30 rounded-sm bg-red-600/10 mb-8 backdrop-blur-sm">
                     <span class="relative flex h-3 w-3">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
                     </span>
-                    <span class="text-xs font-bold uppercase tracking-widest text-red-500">Đà Nẵng's #1 MMA Station</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-red-500" data-i18n="hero_badge">Đà Nẵng's #1 Fighting Station</span>
                 </div>
-                <h1 class="text-7xl md:text-9xl font-black mb-6 leading-none text-white drop-shadow-2xl">
-                    KHÔNG <br>
-                    <span class="text-red-600 italic drop-shadow-2xl">GIỚI HẠN.</span>
+                <h1 class="text-7xl md:text-9xl font-black mb-6 leading-none text-white font-oswald" data-i18n="hero_title">
+                    BẢN LĨNH <br>
+                    <span class="text-red-600 italic">CHIẾN BINH.</span>
                 </h1>
-                <p class="text-zinc-300 text-lg md:text-xl max-w-lg mb-10 leading-relaxed font-medium">
-                    Trải nghiệm hệ thống đào tạo võ thuật thực chiến đỉnh cao tại Đà Nẵng. Chúng tôi không chỉ dạy võ, chúng tôi rèn luyện ý chí chiến binh.
+                <p class="text-zinc-300 text-lg md:text-xl max-w-lg mb-10 leading-relaxed font-medium" data-i18n="hero_desc">
+                    Trải nghiệm hệ thống đào tạo võ thuật thực chiến đỉnh cao tại Đà Nẵng. Giáo án cá nhân hóa, HLV chuyên nghiệp, cơ sở vật chất chuẩn quốc tế.
                 </p>
-                <div class="flex flex-wrap gap-6">
-                    <a href="#calculator" class="group relative px-10 py-5 bg-red-600 font-black uppercase tracking-widest text-sm overflow-hidden transition-all hover:pr-14 rounded-sm shadow-[0_0_20px_rgba(255,0,0,0.4)]">
-                        <span class="relative z-10">Bắt đầu ngay</span>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#calculator" class="group relative px-10 py-5 bg-red-600 font-black uppercase tracking-widest text-sm overflow-hidden transition-all hover:pr-14 rounded-sm" data-i18n="hero_btn1">
+                        <span class="relative z-10">Nhận Ưu Đãi 1-1</span>
                         <i class="fas fa-arrow-right absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all"></i>
                     </a>
-                    <a href="#services" class="px-10 py-5 border border-white/20 font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all rounded-sm backdrop-blur-md bg-black/20">Xem lịch tập</a>
+                    <a href="#pricing" class="px-10 py-5 border border-white/20 font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all rounded-sm backdrop-blur-md bg-black/20" data-i18n="hero_btn2">Xem bảng giá</a>
                 </div>
             </div>
             
             <div class="hidden lg:flex justify-end items-center reveal" style="transition-delay: 200ms;">
                 <div class="relative w-80 h-[500px] border-2 border-red-600/30 p-2 rotate-3 group bg-black/50 backdrop-blur-sm">
-                    <!-- Ảnh HLV Thực Tế -->
                     <img src="4428589172692898035.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544117518-2b44c8ec2183?auto=format&fit=crop&q=80&w=800';" alt="Coach Training" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
-                    <div class="absolute -bottom-10 -left-10 glass p-6 w-64 -rotate-6 shadow-2xl border border-white/10">
-                        <p class="text-red-600 font-bold mb-1 italic uppercase text-lg">HUẤN LUYỆN VIÊN</p>
-                        <p class="text-xs text-zinc-300 font-medium leading-relaxed">Hành trình biến những người bình thường thành những chiến binh thực thụ.</p>
+                    <div class="absolute -bottom-6 -left-12 bg-zinc-900 p-6 w-72 -rotate-6 shadow-2xl border-l-4 border-red-600">
+                        <p class="text-red-600 font-bold mb-1 italic uppercase text-lg font-oswald" data-i18n="hero_coach_title">ĐÀO TẠO KÈM 1-1</p>
+                        <p class="text-xs text-zinc-400 font-medium leading-relaxed" data-i18n="hero_coach_desc">HLV sát sao từng kỹ thuật, đảm bảo bạn tiến bộ sau mỗi buổi tập.</p>
                     </div>
                 </div>
             </div>
@@ -125,503 +133,565 @@
     </section>
 
     <!-- Dynamic Album Section -->
-    <section id="gallery" class="py-32 bg-zinc-950">
+    <section id="gallery" class="py-24 bg-zinc-950">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row items-end justify-between mb-16 gap-8 reveal">
                 <div class="max-w-2xl">
                     <span class="text-red-600 font-bold uppercase tracking-widest mb-4 block underline decoration-2 underline-offset-8">Life at Station</span>
-                    <h2 class="text-5xl md:text-7xl font-black mb-6 italic text-gradient">ALBUM <span class="text-red-600">STATION.</span></h2>
-                    <p class="text-zinc-500 text-lg font-medium italic">Không gian tập luyện chuẩn quốc tế, trang thiết bị hiện đại và cộng đồng võ thuật văn minh tại MMA DANANG STATION.</p>
+                    <h2 class="text-5xl md:text-7xl font-black mb-6 italic font-oswald" data-i18n="album_title">ALBUM <span class="text-red-600">STATION.</span></h2>
+                    <p class="text-zinc-400 text-lg font-medium" data-i18n="album_desc">Không gian tập luyện chuẩn quốc tế, trang thiết bị hiện đại và cộng đồng võ thuật văn minh tại MMA DANANG STATION.</p>
                 </div>
                 <div class="text-zinc-600 font-black uppercase tracking-[0.3em] text-sm animate-pulse">#DANANGMMA</div>
             </div>
 
-            <!-- ALBUM GRID: Dùng toàn bộ ảnh upload với grid-flow-dense để xếp khít -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 grid-flow-dense" id="album-container">
-                
-                <!-- ẢNH 1 (Nổi bật, Logo Lớn) -->
+            <!-- ALBUM GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="album-container">
                 <div class="col-span-2 row-span-2 overflow-hidden group relative cursor-pointer reveal border border-white/5" onclick="openLightbox(this)">
-                    <img src="30594610198115991232.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1599058917233-97f394156059?auto=format&fit=crop&q=80&w=1200';" alt="MMA Danang Station Logo Ring" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-4xl text-white"></i>
+                    <img src="30594610198115991232.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1599058917233-97f394156059?auto=format&fit=crop&q=80&w=1200';" alt="MMA Danang Station Logo Ring" class="w-full h-full object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-3xl text-white"></i>
                     </div>
                 </div>
 
-                <!-- ẢNH 2 (Khu tạ) -->
                 <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 100ms;" onclick="openLightbox(this)">
-                    <img src="40371065745114867076.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=600';" alt="Gym Equipment" class="w-full h-full aspect-square object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-2xl text-white"></i>
+                    <img src="40371065745114867076.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=600';" alt="Gym Equipment" class="w-full h-full aspect-square object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-xl text-white"></i>
                     </div>
                 </div>
 
-                <!-- ẢNH 3 (Dụng cụ/Găng tay) -->
                 <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 150ms;" onclick="openLightbox(this)">
-                    <img src="32996430258325206725.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1549719386-74dfcbf7501a?auto=format&fit=crop&q=80&w=600';" alt="Boxing Gloves and Pads" class="w-full h-full aspect-square object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-2xl text-white"></i>
+                    <img src="32996430258325206725.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1549719386-74dfcbf7501a?auto=format&fit=crop&q=80&w=600';" alt="Boxing Gloves and Pads" class="w-full h-full aspect-square object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-xl text-white"></i>
                     </div>
                 </div>
 
-                <!-- ẢNH 4 (Lồng tập góc rộng) -->
-                <div class="col-span-2 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 200ms;" onclick="openLightbox(this)">
-                    <img src="955100965576329264.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=600';" alt="Wide Angle Ring" class="w-full h-full aspect-[2/1] object-cover object-bottom group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-3xl text-white"></i>
+                <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 200ms;" onclick="openLightbox(this)">
+                    <img src="15055838798461938697.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=600';" alt="Bright Ring Area" class="w-full h-full aspect-square object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-xl text-white"></i>
                     </div>
                 </div>
 
-                <!-- ẢNH 5 (Góc lồng tập sáng sủa) -->
                 <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 250ms;" onclick="openLightbox(this)">
-                    <img src="15055838798461938697.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=600';" alt="Bright Ring Area" class="w-full h-full aspect-square object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-2xl text-white"></i>
+                    <img src="17700758211318242031.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552072092-2f9b1603ee70?auto=format&fit=crop&q=80&w=600';" alt="Entrance and Ring" class="w-full h-full aspect-square object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-xl text-white"></i>
                     </div>
                 </div>
 
-                <!-- ẢNH 6 (Cửa ra vào & Lồng) -->
-                <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 300ms;" onclick="openLightbox(this)">
-                    <img src="17700758211318242031.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552072092-2f9b1603ee70?auto=format&fit=crop&q=80&w=600';" alt="Entrance and Ring" class="w-full h-full aspect-square object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-2xl text-white"></i>
+                <div class="col-span-2 md:col-span-4 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 300ms;" onclick="openLightbox(this)">
+                    <img src="955100965576329264.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=1200';" alt="Wide Angle Ring" class="w-full h-full aspect-[3/1] md:aspect-[4/1] object-cover object-center group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-2xl text-white"></i>
                     </div>
                 </div>
 
-                <!-- ẢNH 7 (Bao cát & Buffet Khai trương) -->
-                <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 350ms;" onclick="openLightbox(this)">
-                    <img src="17961097892698959979.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1564415051543-cb73a7469033?auto=format&fit=crop&q=80&w=600';" alt="Punching Bags and Buffet" class="w-full h-full aspect-square object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-2xl text-white"></i>
+                <div class="col-span-1 md:col-span-2 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 350ms;" onclick="openLightbox(this)">
+                    <img src="17961097892698959979.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1564415051543-cb73a7469033?auto=format&fit=crop&q=80&w=600';" alt="Punching Bags and Buffet" class="w-full h-full aspect-[2/1] object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-2xl text-white"></i>
                     </div>
                 </div>
-                
-                <!-- ẢNH 8 (Lồng chụp chính diện) -->
-                <div class="col-span-1 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 400ms;" onclick="openLightbox(this)">
-                    <img src="2056894527279032153.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1595078475328-1ab05d0a6a0e?auto=format&fit=crop&q=80&w=600';" alt="Boxing Ring Front View" class="w-full h-full aspect-square object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-2xl text-white"></i>
-                    </div>
-                </div>
-                
-                <!-- ẢNH 9 (Bao cát Fairtex) -->
-                <div class="col-span-2 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 450ms;" onclick="openLightbox(this)">
-                    <img src="19873229823532291848.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517438476312-10d79c67750d?auto=format&fit=crop&q=80&w=600';" alt="Fairtex Bags" class="w-full h-full aspect-[2/1] object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fas fa-search-plus text-3xl text-white"></i>
+
+                <div class="col-span-1 md:col-span-2 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 400ms;" onclick="openLightbox(this)">
+                    <img src="19873229823532291848.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517438476312-10d79c67750d?auto=format&fit=crop&q=80&w=600';" alt="Fairtex Bags" class="w-full h-full aspect-[2/1] object-cover group-hover:scale-105 transition duration-1000">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                        <i class="fas fa-expand text-2xl text-white"></i>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Programs (Sử dụng ảnh thực tế) -->
-    <section id="services" class="py-32 bg-black">
+    <!-- Programs Section -->
+    <section id="services" class="py-24 bg-black">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-24 reveal">
-                <h2 class="text-5xl md:text-7xl font-black mb-6 italic">CHƯƠNG TRÌNH <span class="text-red-600">ĐÀO TẠO</span></h2>
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-5xl md:text-7xl font-black mb-6 italic font-oswald" data-i18n="services_title">CHƯƠNG TRÌNH <span class="text-red-600">ĐÀO TẠO</span></h2>
                 <div class="h-1 w-24 bg-red-600 mx-auto rounded-full"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- MMA -->
-                <div class="group relative overflow-hidden bg-zinc-950 p-8 rounded-2xl border border-white/10 hover:border-red-600 transition-all duration-500 reveal">
-                    <div class="mb-8 w-16 h-16 bg-red-600 flex items-center justify-center rounded-xl text-3xl group-hover:scale-110 transition shadow-lg shadow-red-600/30">
-                        <i class="fas fa-hand-fist text-white"></i>
+                <!-- Boxing -->
+                <div class="group relative overflow-hidden bg-zinc-900 p-8 rounded-sm border-t-4 border-transparent hover:border-red-600 transition-all duration-500 reveal">
+                    <div class="mb-6 text-4xl text-red-600 group-hover:scale-110 transition origin-left">
+                        <i class="fas fa-hand-fist"></i>
                     </div>
-                    <h3 class="text-3xl font-bold mb-4">Mixed Martial Arts</h3>
-                    <p class="text-zinc-400 mb-8 leading-relaxed text-sm">Kỹ năng toàn diện từ đứng đấm đến địa chiến. Lớp học dành cho mọi cấp độ tại lồng tập tiêu chuẩn.</p>
-                    <div class="h-56 overflow-hidden rounded-xl border border-white/5">
-                        <img src="30594610198115991232.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552072092-2f9b1603ee70?auto=format&fit=crop&q=80&w=600';" alt="MMA Session" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
-                    </div>
-                </div>
-                <!-- Muay Thai -->
-                <div class="group relative overflow-hidden bg-zinc-950 p-8 rounded-2xl border border-white/10 hover:border-red-600 transition-all duration-500 reveal" style="transition-delay: 100ms;">
-                    <div class="mb-8 w-16 h-16 bg-red-600 flex items-center justify-center rounded-xl text-3xl group-hover:scale-110 transition shadow-lg shadow-red-600/30">
-                        <i class="fas fa-bolt text-white"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold mb-4">Muay Thai / Kickboxing</h3>
-                    <p class="text-zinc-400 mb-8 leading-relaxed text-sm">Nghệ thuật tám chi. Đốt cháy calo tối đa và rèn luyện đòn đánh bùng nổ cùng dàn bao cát Fairtex.</p>
-                    <div class="h-56 overflow-hidden rounded-xl border border-white/5">
-                        <img src="17961097892698959979.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544117518-2b44c8ec2183?auto=format&fit=crop&q=80&w=600';" alt="Muay Thai Session" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
-                    </div>
-                </div>
-                <!-- BJJ & Fitness -->
-                <div class="group relative overflow-hidden bg-zinc-950 p-8 rounded-2xl border border-white/10 hover:border-red-600 transition-all duration-500 reveal" style="transition-delay: 200ms;">
-                    <div class="mb-8 w-16 h-16 bg-red-600 flex items-center justify-center rounded-xl text-3xl group-hover:scale-110 transition shadow-lg shadow-red-600/30">
-                        <i class="fas fa-dumbbell text-white"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold mb-4">Trang bị & Thể lực</h3>
-                    <p class="text-zinc-400 mb-8 leading-relaxed text-sm">Hệ thống tạ hiện đại, dụng cụ bảo hộ 3N, Fairtex cao cấp hỗ trợ học viên an toàn tuyệt đối khi tập luyện.</p>
-                    <div class="h-56 overflow-hidden rounded-xl border border-white/5">
-                        <img src="32996430258325206725.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1564415051543-cb73a7469033?auto=format&fit=crop&q=80&w=600';" alt="Equipment" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Programs (Sử dụng ảnh thực tế) -->
-    <section id="services" class="py-32 bg-black">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-24 reveal">
-                <h2 class="text-5xl md:text-7xl font-black mb-6 italic">CHƯƠNG TRÌNH <span class="text-red-600">ĐÀO TẠO</span></h2>
-                <div class="h-1 w-24 bg-red-600 mx-auto rounded-full"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- MMA -->
-                <div class="group relative overflow-hidden bg-zinc-950 p-8 rounded-2xl border border-white/10 hover:border-red-600 transition-all duration-500 reveal">
-                    <div class="mb-8 w-16 h-16 bg-red-600 flex items-center justify-center rounded-xl text-3xl group-hover:scale-110 transition shadow-lg shadow-red-600/30">
-                        <i class="fas fa-hand-fist text-white"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold mb-4">Mixed Martial Arts</h3>
-                    <p class="text-zinc-400 mb-8 leading-relaxed text-sm">Kỹ năng toàn diện từ đứng đấm đến địa chiến. Lớp học dành cho mọi cấp độ tại lồng tập tiêu chuẩn.</p>
-                    <div class="h-56 overflow-hidden rounded-xl border border-white/5">
-                        <img src="D C [10-04-2026 14_45].zip/30594610198115991232.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552072092-2f9b1603ee70?auto=format&fit=crop&q=80&w=600';" alt="MMA Session" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
+                    <h3 class="text-2xl font-bold mb-3 font-oswald" data-i18n="services_boxing_title">BOXING</h3>
+                    <p class="text-zinc-400 mb-8 text-sm" data-i18n="services_boxing_desc">Kỹ năng quyền anh toàn diện. Rèn luyện phản xạ, kỹ thuật tay, di chuyển linh hoạt trên sàn đấu.</p>
+                    <div class="h-48 overflow-hidden rounded-sm">
+                        <img src="30594610198115991232.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552072092-2f9b1603ee70?auto=format&fit=crop&q=80&w=600';" alt="Boxing" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
                     </div>
                 </div>
                 <!-- Muay Thai -->
-                <div class="group relative overflow-hidden bg-zinc-950 p-8 rounded-2xl border border-white/10 hover:border-red-600 transition-all duration-500 reveal" style="transition-delay: 100ms;">
-                    <div class="mb-8 w-16 h-16 bg-red-600 flex items-center justify-center rounded-xl text-3xl group-hover:scale-110 transition shadow-lg shadow-red-600/30">
-                        <i class="fas fa-bolt text-white"></i>
+                <div class="group relative overflow-hidden bg-zinc-900 p-8 rounded-sm border-t-4 border-transparent hover:border-red-600 transition-all duration-500 reveal" style="transition-delay: 100ms;">
+                    <div class="mb-6 text-4xl text-red-600 group-hover:scale-110 transition origin-left">
+                        <i class="fas fa-bolt"></i>
                     </div>
-                    <h3 class="text-3xl font-bold mb-4">Muay Thai / Kickboxing</h3>
-                    <p class="text-zinc-400 mb-8 leading-relaxed text-sm">Nghệ thuật tám chi. Đốt cháy calo tối đa và rèn luyện đòn đánh bùng nổ cùng dàn bao cát Fairtex.</p>
-                    <div class="h-56 overflow-hidden rounded-xl border border-white/5">
-                        <img src="D C [10-04-2026 14_45].zip/17961097892698959979.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544117518-2b44c8ec2183?auto=format&fit=crop&q=80&w=600';" alt="Muay Thai Session" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
+                    <h3 class="text-2xl font-bold mb-3 font-oswald" data-i18n="services_muay_title">MUAY THAI</h3>
+                    <p class="text-zinc-400 mb-8 text-sm" data-i18n="services_muay_desc">Nghệ thuật tám chi. Đốt cháy calo tối đa và rèn luyện đòn đánh bùng nổ cùng dàn bao cát Fairtex đẳng cấp.</p>
+                    <div class="h-48 overflow-hidden rounded-sm">
+                        <img src="17961097892698959979.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544117518-2b44c8ec2183?auto=format&fit=crop&q=80&w=600';" alt="Muay Thai" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
                     </div>
                 </div>
-                <!-- BJJ & Fitness -->
-                <div class="group relative overflow-hidden bg-zinc-950 p-8 rounded-2xl border border-white/10 hover:border-red-600 transition-all duration-500 reveal" style="transition-delay: 200ms;">
-                    <div class="mb-8 w-16 h-16 bg-red-600 flex items-center justify-center rounded-xl text-3xl group-hover:scale-110 transition shadow-lg shadow-red-600/30">
-                        <i class="fas fa-dumbbell text-white"></i>
+                <!-- PT 1-1 -->
+                <div class="group relative overflow-hidden bg-zinc-900 p-8 rounded-sm border-t-4 border-red-600 shadow-lg shadow-red-900/20 hover:border-red-500 transition-all duration-500 reveal fire-border" style="transition-delay: 200ms;">
+                    <div class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">Đề Xuất</div>
+                    <div class="mb-6 text-4xl text-red-600 group-hover:scale-110 transition origin-left">
+                        <i class="fas fa-user-ninja"></i>
                     </div>
-                    <h3 class="text-3xl font-bold mb-4">Trang bị & Thể lực</h3>
-                    <p class="text-zinc-400 mb-8 leading-relaxed text-sm">Hệ thống tạ hiện đại, dụng cụ bảo hộ 3N, Fairtex cao cấp hỗ trợ học viên an toàn tuyệt đối khi tập luyện.</p>
-                    <div class="h-56 overflow-hidden rounded-xl border border-white/5">
-                        <img src="D C [10-04-2026 14_45].zip/32996430258325206725.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1564415051543-cb73a7469033?auto=format&fit=crop&q=80&w=600';" alt="Equipment" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
+                    <h3 class="text-2xl font-bold mb-3 font-oswald text-white" data-i18n="services_pt_title">ĐÀO TẠO 1-1 VỚI HLV</h3>
+                    <p class="text-zinc-300 mb-8 text-sm font-medium" data-i18n="services_pt_desc">Chương trình cá nhân hóa hoàn toàn. HLV trực tiếp chỉnh sửa kỹ thuật, đẩy nhanh quá trình đạt mục tiêu.</p>
+                    <div class="h-48 overflow-hidden rounded-sm">
+                        <img src="4428589172692898035.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1561532325-7d5231a2dede?auto=format&fit=crop&q=80&w=600';" alt="Personal Training 1-1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-32 bg-zinc-950">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-24 reveal">
-                <h2 class="text-5xl md:text-7xl font-black mb-6 italic text-gradient">GÓI TẬP <span class="text-red-600">ƯU ĐÃI</span></h2>
-                <p class="text-zinc-500 font-bold uppercase tracking-widest text-xs">Phù hợp với mọi mục tiêu</p>
+    <!-- Detailed Pricing & Menu Section (Restructured for 1-1 Focus) -->
+    <section id="pricing" class="py-24 bg-zinc-950 border-y border-white/10 relative overflow-hidden">
+        <!-- Background elements -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517438476312-10d79c67750d?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-5"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950"></div>
+
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-5xl md:text-7xl font-black mb-4 italic font-oswald text-white" data-i18n="pricing_title">MENU <span class="text-red-600">DỊCH VỤ</span></h2>
+                <p class="text-zinc-400 font-bold uppercase tracking-widest text-sm" data-i18n="pricing_subtitle">Lựa chọn tốt nhất dành cho bạn</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Basic -->
-                <div class="glass p-12 rounded-3xl border border-white/5 reveal">
-                    <h4 class="text-xl font-bold mb-2">CHÀO SÂN</h4>
-                    <div class="text-5xl font-black mb-8 italic">990k<span class="text-sm font-normal text-zinc-500 not-italic uppercase"> / Tháng</span></div>
-                    <ul class="space-y-4 mb-10 text-zinc-400 font-semibold text-sm">
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> Tập tất cả các buổi MMA</li>
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> 1 Buổi PT 1-kèm-1</li>
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> Sử dụng full trang thiết bị</li>
-                        <li class="opacity-30"><i class="fas fa-times mr-2"></i> Tủ đồ riêng locker</li>
-                    </ul>
-                    <a href="#calculator" class="block text-center py-4 border border-white/20 rounded-full font-bold hover:bg-white hover:text-black transition uppercase text-xs tracking-widest">Đăng ký ngay</a>
-                </div>
-                <!-- Pro -->
-                <div class="bg-red-600 p-12 rounded-3xl relative scale-105 shadow-2xl reveal mma-shadow" style="transition-delay: 100ms;">
-                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-red-600 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Phổ biến nhất</div>
-                    <h4 class="text-xl font-bold mb-2">CHUYÊN NGHIỆP</h4>
-                    <div class="text-5xl font-black mb-8 italic">2.5tr<span class="text-sm font-normal text-white/60 not-italic uppercase"> / 3 Tháng</span></div>
-                    <ul class="space-y-4 mb-10 text-white/90 font-semibold text-sm">
-                        <li><i class="fas fa-check text-white mr-2"></i> Full bộ môn (MMA, Muay, BJJ)</li>
-                        <li><i class="fas fa-check text-white mr-2"></i> 3 Buổi PT chuyên sâu</li>
-                        <li><i class="fas fa-check text-white mr-2"></i> Tặng găng tay & quấn tay</li>
-                        <li><i class="fas fa-check text-white mr-2"></i> Tủ đồ riêng locker</li>
-                    </ul>
-                    <a href="#calculator" class="block text-center py-4 bg-white text-black rounded-full font-bold hover:bg-black hover:text-white transition uppercase text-xs tracking-widest">Đăng ký ngay</a>
-                </div>
-                <!-- Warrior -->
-                <div class="glass p-12 rounded-3xl border border-white/5 reveal" style="transition-delay: 200ms;">
-                    <h4 class="text-xl font-bold mb-2">WARRIOR ELITE</h4>
-                    <div class="text-5xl font-black mb-8 italic">8tr<span class="text-sm font-normal text-zinc-500 not-italic uppercase"> / 1 Năm</span></div>
-                    <ul class="space-y-4 mb-10 text-zinc-400 font-semibold text-sm">
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> Không giới hạn thời gian tập</li>
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> Huấn luyện thi đấu chuyên nghiệp</li>
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> Chế độ dinh dưỡng cá nhân</li>
-                        <li><i class="fas fa-check text-red-600 mr-2"></i> Đặc quyền VIP Member</li>
-                    </ul>
-                    <a href="#calculator" class="block text-center py-4 border border-white/20 rounded-full font-bold hover:bg-white hover:text-black transition uppercase text-xs tracking-widest">Đăng ký ngay</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- BMI & Lead Form -->
-    <section id="calculator" class="py-32 relative">
-        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-            
-            <div class="reveal">
-                <h2 class="text-6xl font-black mb-8 leading-tight">GIA NHẬP <br><span class="text-red-600 italic">CHIẾN ĐỘI.</span></h2>
-                <p class="text-zinc-400 mb-12 text-lg">Đừng để ngày mai. Hãy bắt đầu hành trình thay đổi bản thân ngay hôm nay với sự hỗ trợ từ các chuyên gia hàng đầu.</p>
-                
-                <div class="space-y-8">
-                    <div class="flex gap-6 items-center">
-                        <div class="w-12 h-12 rounded-full border border-red-600/30 flex items-center justify-center text-red-600"><i class="fas fa-map-marker-alt"></i></div>
-                        <div>
-                            <p class="font-bold uppercase tracking-widest text-xs mb-1">Địa điểm</p>
-                            <p class="text-zinc-300">Quận Hải Châu, TP. Đà Nẵng</p>
-                        </div>
+            <!-- Highlight 1-1 Coaching -->
+            <div class="bg-gradient-to-br from-red-900 to-black border-2 border-red-600 rounded-3xl p-8 md:p-12 mb-16 mma-shadow reveal transform hover:scale-[1.02] transition-transform duration-500">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="flex-1">
+                        <div class="inline-block bg-red-600 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-4" data-i18n="pkg_pt_badge">Dịch Vụ Trọng Tâm</div>
+                        <h3 class="text-4xl md:text-5xl font-black text-white font-oswald mb-4 uppercase" data-i18n="pkg_pt_title">Gói Tập Ưu Đãi Kèm 1-1</h3>
+                        <ul class="space-y-4 text-zinc-200 text-lg mb-8">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-red-500 mt-1"></i>
+                                <span data-i18n="pkg_pt_li1">Học kèm trực tiếp với huấn luyện viên 1-1.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-red-500 mt-1"></i>
+                                <span data-i18n="pkg_pt_li2">Giáo án dành riêng cho hội viên phù hợp với thể trạng.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-star text-yellow-400 mt-1 animate-pulse"></i>
+                                <strong class="text-white" data-i18n="pkg_pt_li3">Buổi trial đầu tiên trải nghiệm thực tế chỉ với 200.000đ.</strong>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="flex gap-6 items-center">
-                        <div class="w-12 h-12 rounded-full border border-red-600/30 flex items-center justify-center text-red-600"><i class="fas fa-phone-alt"></i></div>
-                        <div>
-                            <p class="font-bold uppercase tracking-widest text-xs mb-1">Hotline</p>
-                            <p class="text-zinc-300">0905 XXX XXX</p>
-                        </div>
+                    <div class="text-center md:text-right bg-black/40 p-8 rounded-2xl border border-white/10 w-full md:w-auto min-w-[300px]">
+                        <div class="text-zinc-400 text-sm font-bold uppercase tracking-widest mb-2" data-i18n="pkg_pt_price_lbl">Chi phí huấn luyện</div>
+                        <div class="text-6xl font-black text-white italic mb-2">500<span class="text-3xl text-red-500">k</span></div>
+                        <div class="text-zinc-500 font-medium uppercase tracking-widest text-xs mb-8" data-i18n="pkg_pt_duration">/ 1 Buổi Tập</div>
+                        <a href="#calculator" class="block w-full py-4 bg-red-600 text-white rounded-full font-black hover:bg-white hover:text-black transition uppercase text-sm tracking-widest shadow-lg shadow-red-600/30" data-i18n="pkg_btn">Đăng ký Tập thử</a>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-surface p-8 md:p-14 rounded-3xl shadow-2xl border border-white/5 reveal">
-                <div class="flex gap-4 mb-10 border-b border-white/5 pb-4">
-                    <button id="tab-bmi" onclick="switchForm('bmi')" class="flex-1 font-black uppercase tracking-widest text-xs text-red-600 border-b-2 border-red-600 pb-4 transition-all">Tính Chỉ Số BMI</button>
-                    <button id="tab-contact" onclick="switchForm('contact')" class="flex-1 font-black uppercase tracking-widest text-xs text-zinc-500 pb-4 transition-all">Gửi Thông Tin</button>
-                </div>
-
-                <!-- BMI Part -->
-                <div id="form-bmi" class="space-y-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase font-black tracking-widest text-zinc-500 ml-2">Cân nặng (kg)</label>
-                            <input type="number" id="weight" placeholder="70" class="w-full bg-zinc-900 border border-white/5 rounded-xl p-5 focus:border-red-600 outline-none transition text-2xl font-black">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase font-black tracking-widest text-zinc-500 ml-2">Chiều cao (cm)</label>
-                            <input type="number" id="height" placeholder="175" class="w-full bg-zinc-900 border border-white/5 rounded-xl p-5 focus:border-red-600 outline-none transition text-2xl font-black">
-                        </div>
+            <!-- Group Classes Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 reveal">
+                <!-- Schedule -->
+                <div class="bg-zinc-900 border border-white/5 rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+                        <i class="fas fa-users text-2xl text-red-500"></i>
+                        <h3 class="text-2xl font-bold text-white font-oswald uppercase" data-i18n="menu_group_schedule">Lịch Tập Lớp Nhóm</h3>
                     </div>
-                    <button onclick="calculateBMI()" class="w-full bg-white text-black font-black py-5 rounded-xl hover:bg-red-600 hover:text-white transition uppercase tracking-[0.2em] text-sm shadow-[0_0_15px_rgba(255,255,255,0.2)]">Phân tích thể trạng</button>
-                    
-                    <div id="bmi-result" class="hidden p-8 bg-black rounded-2xl border-l-4 border-red-600 animate-pulse">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <p class="text-xs text-zinc-500 uppercase font-black mb-2">Chỉ số BMI</p>
-                                <span id="bmi-value" class="text-6xl font-black italic">--</span>
+                    <div class="space-y-6 text-zinc-300">
+                        <div class="flex justify-between items-center bg-black/50 p-4 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-zinc-800 flex items-center justify-center rounded text-red-500"><i class="fas fa-hand-fist"></i></div>
+                                <span class="font-bold text-lg uppercase" data-i18n="menu_group_boxing">Lớp Boxing</span>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs text-zinc-500 uppercase font-black mb-2">Tình trạng</p>
-                                <span id="bmi-status" class="text-xl font-black text-red-600 italic uppercase">--</span>
+                                <span class="block text-red-400 font-black tracking-widest">2 - 4 - 6</span>
+                                <span class="text-xs text-zinc-500 uppercase" data-i18n="menu_time">Lúc 18:00</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-black/50 p-4 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-zinc-800 flex items-center justify-center rounded text-red-500"><i class="fas fa-bolt"></i></div>
+                                <span class="font-bold text-lg uppercase" data-i18n="menu_group_muay">Lớp Muay Thai</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-red-400 font-black tracking-widest">3 - 5 - 7</span>
+                                <span class="text-xs text-zinc-500 uppercase" data-i18n="menu_time">Lúc 18:00</span>
                             </div>
                         </div>
                     </div>
+                    <p class="mt-6 text-xs text-zinc-500 italic text-center" data-i18n="menu_group_note">* Quy mô lớp nhóm tiêu chuẩn từ 10 - 15 học viên.</p>
                 </div>
 
-                <!-- Contact Part -->
-                <div id="form-contact" class="hidden space-y-6">
-                    <form id="lead-form" class="space-y-4">
-                        <input type="text" name="fullName" placeholder="Họ và tên học viên" required class="w-full bg-zinc-900 border border-white/5 rounded-xl p-5 focus:border-red-600 outline-none transition font-semibold text-white">
-                        <input type="tel" name="phone" placeholder="Số điện thoại liên hệ" required class="w-full bg-zinc-900 border border-white/5 rounded-xl p-5 focus:border-red-600 outline-none transition font-semibold text-white">
-                        <select name="goal" class="w-full bg-zinc-900 border border-white/5 rounded-xl p-5 focus:border-red-600 outline-none transition font-semibold appearance-none text-white">
-                            <option value="" class="text-zinc-500">Chọn mục tiêu tập luyện</option>
-                            <option value="MMA">MMA Chuyên nghiệp</option>
-                            <option value="Muay">Muay Thai / Kickboxing</option>
-                            <option value="BJJ">Brazilian Jiu-Jitsu</option>
-                            <option value="WeightLoss">Giảm cân / Tăng cơ</option>
-                        </select>
-                        <input type="hidden" id="hidden-bmi" name="bmiValue">
-                        <input type="hidden" id="hidden-status" name="bmiStatus">
+                <!-- Group Pricing -->
+                <div class="bg-zinc-900 border border-white/5 rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+                        <i class="fas fa-tags text-2xl text-red-500"></i>
+                        <h3 class="text-2xl font-bold text-white font-oswald uppercase" data-i18n="menu_group_price_title">Gói Tập Lớp Nhóm</h3>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- Option 1 -->
+                        <div class="border-l-4 border-zinc-700 pl-4 hover:border-red-500 transition-colors">
+                            <h4 class="text-white font-bold mb-2 uppercase tracking-wide" data-i18n="menu_group_opt1">Tham gia 1 lớp (Tuần 3 buổi)</h4>
+                            <div class="flex justify-between items-end">
+                                <span class="text-zinc-400 text-sm">Gói 1 Tháng: <strong class="text-white text-lg">1.000.000đ</strong></span>
+                                <span class="text-zinc-400 text-sm">Gói 3 Tháng: <strong class="text-red-400 text-lg">2.500.000đ</strong></span>
+                            </div>
+                        </div>
                         
-                        <button type="submit" id="submit-btn" class="w-full bg-red-600 text-white font-black py-5 rounded-xl hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-sm shadow-[0_0_20px_rgba(255,0,0,0.3)]">Xác nhận đăng ký</button>
-                    </form>
-                    <div id="success-msg" class="hidden p-6 bg-green-500/10 text-green-500 border border-green-500/30 rounded-xl text-center font-bold italic">
-                        <i class="fas fa-check-double mr-2"></i> Chào mừng bạn đến với Station! Chúng tôi sẽ gọi sớm.
+                        <!-- Option 2 -->
+                        <div class="border-l-4 border-zinc-700 pl-4 hover:border-red-500 transition-colors">
+                            <h4 class="text-white font-bold mb-2 uppercase tracking-wide" data-i18n="menu_group_opt2">Tham gia 2 lớp (Tuần 6 buổi)</h4>
+                            <div class="flex justify-between items-end">
+                                <span class="text-zinc-400 text-sm">Gói 1 Tháng: <strong class="text-white text-lg">1.500.000đ</strong></span>
+                                <span class="text-zinc-400 text-sm">Gói 3 Tháng: <strong class="text-red-400 text-lg">4.300.000đ</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <a href="#calculator" class="block w-full py-3 border border-white/20 text-center text-white rounded-full font-bold hover:bg-white hover:text-black transition uppercase text-xs tracking-widest" data-i18n="pkg_btn">Đăng ký ngay</a>
                     </div>
                 </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Unified Smart Form & AI BMI Section -->
+    <section id="calculator" class="py-32 relative bg-zinc-950 bg-pattern">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-16 items-start">
+            
+            <!-- Left Info -->
+            <div class="lg:col-span-5 reveal">
+                <div class="sticky top-32">
+                    <h2 class="text-6xl font-black mb-6 leading-tight font-oswald text-white" data-i18n="form_title">GIA NHẬP <br><span class="text-red-600 italic">CHIẾN ĐỘI.</span></h2>
+                    <p class="text-zinc-400 mb-10 text-lg leading-relaxed" data-i18n="form_desc">
+                        Điền đầy đủ thông tin bên dưới. Hệ thống sẽ phân tích thể trạng và HLV của Station sẽ liên hệ ngay để thiết kế lộ trình tập luyện độc quyền dành cho bạn.
+                    </p>
+                    
+                    <div class="space-y-6 mb-10">
+                        <div class="flex gap-4 items-center p-4 bg-zinc-900 rounded-sm border border-white/5">
+                            <div class="w-12 h-12 flex items-center justify-center text-red-600 text-xl bg-black"><i class="fas fa-gift"></i></div>
+                            <div>
+                                <p class="font-bold uppercase tracking-widest text-xs mb-1 text-white" data-i18n="feat_gift">Đăng Ký Trial Kèm 1-1</p>
+                                <p class="text-zinc-400 text-sm" data-i18n="feat_gift_desc">Trải nghiệm huấn luyện riêng chỉ 200.000đ.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info Block -->
+                    <div class="space-y-4">
+                        <p class="flex items-center gap-4 text-zinc-300 font-medium">
+                            <i class="fas fa-map-marker-alt text-red-600 text-xl w-6 text-center"></i> 
+                            <span>64 Nguyễn Xuân Khoát, Sơn Trà, Đà Nẵng</span>
+                        </p>
+                        <p class="flex items-center gap-4 text-zinc-300 font-medium">
+                            <i class="fas fa-phone-alt text-red-600 text-xl w-6 text-center"></i> 
+                            <span>Hotline: 0905 418 862</span>
+                        </p>
+                        <p class="flex items-center gap-4 text-zinc-300 font-medium">
+                            <i class="fab fa-whatsapp text-red-600 text-xl w-6 text-center"></i> 
+                            <span>WhatsApp/Zalo: +84 905 418 862</span>
+                        </p>
+                        <p class="flex items-center gap-4 text-zinc-300 font-medium">
+                            <i class="fab fa-facebook text-red-600 text-xl w-6 text-center"></i> 
+                            <span>MMA Danang Station</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Form (Unified) -->
+            <div class="lg:col-span-7 bg-black p-8 md:p-12 rounded-sm shadow-2xl border border-white/10 reveal relative overflow-hidden">
+                <div class="scan-line" id="scan-line"></div>
+                
+                <form id="smart-form" class="space-y-6 relative z-10">
+                    <h3 class="text-2xl font-bold font-oswald mb-6 italic border-b border-white/10 pb-4 text-white" data-i18n="form_header">THÔNG TIN HỌC VIÊN & THỂ TRẠNG</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="text" name="fullName" id="fullName" placeholder="Họ và tên học viên *" required class="w-full bg-zinc-900 border border-white/10 rounded-sm p-4 focus:border-red-600 outline-none transition font-medium text-white placeholder-zinc-600">
+                        <input type="tel" name="phone" id="phone" placeholder="Số điện thoại *" required class="w-full bg-zinc-900 border border-white/10 rounded-sm p-4 focus:border-red-600 outline-none transition font-medium text-white placeholder-zinc-600">
+                    </div>
+                    
+                    <select name="goal" id="goal" required class="w-full bg-zinc-900 border border-white/10 rounded-sm p-4 focus:border-red-600 outline-none transition font-medium text-zinc-300 appearance-none cursor-pointer">
+                        <option value="" disabled selected data-i18n="opt_placeholder">Dịch vụ bạn quan tâm? *</option>
+                        <option value="PT_1_1" data-i18n="opt_pt">Tập kèm 1-1 với Huấn Luyện Viên (Ưu tiên)</option>
+                        <option value="Class_Boxing" data-i18n="opt_class_box">Tham gia Lớp nhóm Boxing</option>
+                        <option value="Class_Muay" data-i18n="opt_class_muay">Tham gia Lớp nhóm Muay Thai</option>
+                        <option value="Health" data-i18n="opt_health">Cải thiện thể lực / Giảm cân chung</option>
+                    </select>
+
+                    <div class="grid grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase font-bold tracking-widest text-red-500" data-i18n="lbl_weight">Cân nặng (kg) *</label>
+                            <input type="number" name="weight" id="weight" placeholder="VD: 70" required min="30" max="200" class="w-full bg-zinc-900 border border-white/10 rounded-sm p-4 focus:border-red-600 outline-none transition text-xl font-bold text-white">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase font-bold tracking-widest text-red-500" data-i18n="lbl_height">Chiều cao (cm) *</label>
+                            <input type="number" name="height" id="height" placeholder="VD: 175" required min="100" max="250" class="w-full bg-zinc-900 border border-white/10 rounded-sm p-4 focus:border-red-600 outline-none transition text-xl font-bold text-white">
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="hidden-bmi" name="bmiValue">
+                    <input type="hidden" id="hidden-status" name="bmiStatus">
+                    <input type="hidden" id="hidden-ai" name="aiAnalysis">
+
+                    <button type="submit" id="submit-btn" class="w-full bg-red-600 text-white font-black py-5 mt-4 hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-sm shadow-[0_0_20px_rgba(255,0,0,0.3)] flex justify-center items-center gap-3">
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="btn_analyze">Gửi Yêu Cầu & Tính BMI</span>
+                    </button>
+                </form>
+
+                <!-- AI Result Box -->
+                <div id="ai-result-box" class="hidden mt-8 p-6 bg-zinc-900 border border-red-600/50 relative">
+                    <div class="absolute -top-3 left-6 bg-red-600 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">Report</div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6 border-b border-white/10 pb-6">
+                        <div>
+                            <p class="text-xs text-zinc-500 uppercase font-bold mb-1" data-i18n="res_bmi">Chỉ số BMI</p>
+                            <span id="res-bmi-val" class="text-5xl font-black italic text-white">--</span>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-zinc-500 uppercase font-bold mb-1" data-i18n="res_status">Thể trạng</p>
+                            <span id="res-status-val" class="text-xl font-black italic uppercase text-red-500">--</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-2 text-center">
+                        <p class="text-green-500 font-bold text-sm italic"><i class="fas fa-check-circle mr-1"></i> <span data-i18n="res_success">Đăng ký thành công! Dữ liệu đã gửi về Station. HLV sẽ gọi cho bạn sớm.</span></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Location & Map Section -->
+    <section class="border-y border-white/10 bg-black">
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="p-12 lg:p-24 flex flex-col justify-center reveal">
+                <h2 class="text-4xl md:text-5xl font-black mb-6 font-oswald italic uppercase text-white" data-i18n="map_title">VỊ TRÍ <span class="text-red-600">ĐẮC ĐỊA</span></h2>
+                <p class="text-zinc-400 mb-8" data-i18n="map_desc">Tọa lạc ngay tại Sơn Trà, trung tâm Đà Nẵng, Station được trang bị bãi đậu xe rộng rãi, khu vực an toàn và cơ sở vật chất chuẩn quốc tế.</p>
+                <div class="space-y-4 font-medium">
+                    <p class="flex items-center gap-4 text-white"><i class="fas fa-map-marker-alt text-red-600 text-xl w-6 text-center"></i> 64 Nguyễn Xuân Khoát, Sơn Trà, Đà Nẵng</p>
+                    <p class="flex items-center gap-4 text-white"><i class="fas fa-clock text-red-600 text-xl w-6 text-center"></i> Open: 05:30 AM - 10:00 PM (T2-CN)</p>
+                    <p class="flex items-center gap-4 text-white"><i class="fas fa-parking text-red-600 text-xl w-6 text-center"></i> Free Parking cho Ô tô & Xe máy</p>
+                </div>
+            </div>
+            <!-- Google Maps Embed for Nguyen Xuan Khoat, Son Tra, Da Nang -->
+            <div class="h-96 lg:h-auto w-full grayscale hover:grayscale-0 transition-all duration-700">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.821422731874!2d108.2323883!3d16.0747447!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314217d8aa04d1ef%3A0x6a23b2dc3b0f516a!2zNjQgTmd1eeG7hW4gWHXDom4gS2hvw6F0LCBBbiBI4bqjaSBC4bqvYywgU8SjbiBUcsOgLCDEkMOgIE7hurVuZywgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1689100000000!5m2!1sen!2s" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black pt-32 pb-12 border-t border-white/5">
+    <footer class="bg-black pt-20 pb-10">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-2 mb-8 text-white">
-                        <div class="w-8 h-8 bg-red-600 flex items-center justify-center rounded-lg rotate-45">
-                            <i class="fas fa-fist-raised -rotate-45 text-sm"></i>
-                        </div>
-                        <span class="text-xl font-black italic uppercase">MMA<span class="text-red-600">DANANG</span></span>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/10 pb-10 mb-10">
+                <div class="flex items-center gap-2 text-white">
+                    <div class="w-8 h-8 bg-red-600 flex items-center justify-center rounded-sm rotate-45">
+                        <i class="fas fa-fist-raised -rotate-45 text-sm"></i>
                     </div>
-                    <p class="text-zinc-500 max-w-sm mb-8 leading-loose text-sm">
-                        Hệ thống đào tạo võ thuật hàng đầu tại Đà Nẵng. Chúng tôi cam kết mang lại môi trường tập luyện chuyên nghiệp, văn minh và hiệu quả cao nhất.
-                    </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-tiktok"></i></a>
-                    </div>
+                    <span class="text-xl font-black italic uppercase font-oswald">MMA<span class="text-red-600">DANANG</span></span>
                 </div>
-                
-                <div class="space-y-6">
-                    <h5 class="font-black uppercase tracking-widest text-[10px] text-zinc-400">Khám phá</h5>
-                    <ul class="text-zinc-500 space-y-4 text-sm font-semibold">
-                        <li><a href="#gallery" class="hover:text-red-600 transition">Album ảnh hoạt động</a></li>
-                        <li><a href="#services" class="hover:text-red-600 transition">Các bộ môn huấn luyện</a></li>
-                        <li><a href="#pricing" class="hover:text-red-600 transition">Bảng giá gói tập</a></li>
-                    </ul>
-                </div>
-                
-                <div class="space-y-6">
-                    <h5 class="font-black uppercase tracking-widest text-[10px] text-zinc-400">Liên lạc</h5>
-                    <ul class="text-zinc-500 space-y-4 text-sm font-semibold">
-                        <li>📍 123 Võ Nguyên Giáp, Đà Nẵng</li>
-                        <li>✉️ contact@mmadanang.com</li>
-                        <li>📞 0905 XXX XXX</li>
-                    </ul>
+                <div class="flex gap-4">
+                    <a href="https://facebook.com" class="w-10 h-10 border border-white/20 flex items-center justify-center text-white hover:bg-red-600 hover:border-red-600 transition rounded-full"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" class="w-10 h-10 border border-white/20 flex items-center justify-center text-white hover:bg-red-600 hover:border-red-600 transition rounded-full"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             
-            <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-[10px] text-zinc-700 uppercase tracking-[0.3em]">© 2024 MMA DANANG STATION. ALL RIGHTS RESERVED.</p>
-                <div class="flex gap-8 text-[10px] text-zinc-700 uppercase tracking-[0.2em] font-black">
-                    <a href="#" class="hover:text-white">Privacy</a>
-                    <a href="#" class="hover:text-white">Terms</a>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-[10px] text-zinc-600 uppercase tracking-[0.2em] font-bold">© 2024 MMA DANANG STATION. BUILT FOR WARRIORS.</p>
+                <div class="flex gap-6 text-[10px] text-zinc-600 uppercase tracking-[0.1em] font-bold">
+                    <a href="#" class="hover:text-red-500">Privacy Policy</a>
+                    <a href="#" class="hover:text-red-500">Terms of Service</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // Scroll Reveal Animation
+        // --- 1. MULTI-LANGUAGE SYSTEM (EN/VI) ---
+        const translations = {
+            vi: {
+                nav_home: "Trang chủ", nav_gallery: "Album ảnh", nav_services: "Đào tạo", nav_pricing: "Gói tập & Menu", nav_trial: "Đăng ký Tập thử",
+                hero_badge: "Đà Nẵng's #1 Fighting Station", hero_title: "BẢN LĨNH <br><span class='text-red-600 italic'>CHIẾN BINH.</span>",
+                hero_desc: "Trải nghiệm hệ thống đào tạo võ thuật thực chiến đỉnh cao tại Đà Nẵng. Giáo án cá nhân hóa, HLV chuyên nghiệp, cơ sở vật chất chuẩn quốc tế.",
+                hero_btn1: "<span class='relative z-10'>Nhận Ưu Đãi 1-1</span><i class='fas fa-arrow-right absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all'></i>", 
+                hero_btn2: "Xem bảng giá",
+                hero_coach_title: "ĐÀO TẠO KÈM 1-1", hero_coach_desc: "HLV sát sao từng kỹ thuật, đảm bảo bạn tiến bộ sau mỗi buổi tập.",
+                album_title: "ALBUM <span class='text-red-600'>STATION.</span>", album_desc: "Không gian tập luyện chuẩn quốc tế, trang thiết bị hiện đại và cộng đồng võ thuật văn minh.",
+                services_title: "CHƯƠNG TRÌNH <span class='text-red-600'>ĐÀO TẠO</span>",
+                services_boxing_title: "BOXING", services_boxing_desc: "Kỹ năng quyền anh toàn diện. Rèn luyện phản xạ, kỹ thuật tay, di chuyển linh hoạt trên sàn đấu.",
+                services_muay_title: "MUAY THAI", services_muay_desc: "Nghệ thuật tám chi. Đốt cháy calo tối đa và rèn luyện đòn đánh bùng nổ cùng dàn bao cát Fairtex đẳng cấp.",
+                services_pt_title: "ĐÀO TẠO 1-1 VỚI HLV", services_pt_desc: "Chương trình cá nhân hóa hoàn toàn. HLV trực tiếp chỉnh sửa kỹ thuật, đẩy nhanh quá trình đạt mục tiêu.",
+                
+                // Pricing section
+                pricing_title: "MENU <span class='text-red-600'>DỊCH VỤ</span>", pricing_subtitle: "Lựa chọn tốt nhất dành cho bạn",
+                pkg_pt_badge: "Dịch Vụ Trọng Tâm", pkg_pt_title: "Gói Tập Ưu Đãi Kèm 1-1", 
+                pkg_pt_li1: "Học kèm trực tiếp với huấn luyện viên 1-1.", pkg_pt_li2: "Giáo án dành riêng cho hội viên phù hợp với thể trạng.", pkg_pt_li3: "Buổi trial đầu tiên trải nghiệm thực tế chỉ với 200.000đ.",
+                pkg_pt_price_lbl: "Chi phí huấn luyện", pkg_pt_duration: "/ 1 Buổi Tập", pkg_btn: "Đăng ký ngay",
+                
+                menu_group_schedule: "Lịch Tập Lớp Nhóm", menu_group_boxing: "Lớp Boxing", menu_group_muay: "Lớp Muay Thai", menu_time: "Lúc 18:00", menu_group_note: "* Quy mô lớp nhóm tiêu chuẩn từ 10 - 15 học viên.",
+                menu_group_price_title: "Gói Tập Lớp Nhóm", menu_group_opt1: "Tham gia 1 lớp (Tuần 3 buổi)", menu_group_opt2: "Tham gia 2 lớp (Tuần 6 buổi)",
+
+                form_title: "GIA NHẬP <br><span class='text-red-600 italic'>CHIẾN ĐỘI.</span>",
+                form_desc: "Điền đầy đủ thông tin bên dưới. Hệ thống sẽ phân tích thể trạng và HLV của Station sẽ liên hệ ngay để thiết kế lộ trình tập luyện độc quyền dành cho bạn.",
+                feat_ai: "Phân Tích AI 24/7", feat_ai_desc: "Tự động đề xuất dinh dưỡng và bài tập.",
+                feat_gift: "Đăng Ký Trial Kèm 1-1", feat_gift_desc: "Trải nghiệm huấn luyện riêng chỉ 200.000đ.",
+                form_header: "THÔNG TIN HỌC VIÊN & THỂ TRẠNG",
+                opt_placeholder: "Dịch vụ bạn quan tâm? *", opt_pt: "Tập kèm 1-1 với Huấn Luyện Viên (Ưu tiên)", opt_class_box: "Tham gia Lớp nhóm Boxing", opt_class_muay: "Tham gia Lớp nhóm Muay Thai", opt_health: "Cải thiện thể lực / Giảm cân chung",
+                lbl_weight: "Cân nặng (kg) *", lbl_height: "Chiều cao (cm) *",
+                btn_analyze: "Gửi Yêu Cầu & Tính BMI",
+                res_bmi: "Chỉ số BMI", res_status: "Thể trạng", res_success: "Đăng ký thành công! Dữ liệu đã gửi về Station. HLV sẽ gọi cho bạn sớm.",
+                map_title: "VỊ TRÍ <span class='text-red-600'>ĐẮC ĐỊA</span>", map_desc: "Tọa lạc ngay tại Sơn Trà, trung tâm Đà Nẵng, Station được trang bị bãi đậu xe rộng rãi, khu vực an toàn và cơ sở vật chất chuẩn quốc tế."
+            },
+            en: {
+                nav_home: "Home", nav_gallery: "Gallery", nav_services: "Programs", nav_pricing: "Pricing", nav_trial: "Free Trial",
+                hero_badge: "Da Nang's #1 Fighting Station", hero_title: "WARRIOR <br><span class='text-red-600 italic'>SPIRIT.</span>",
+                hero_desc: "Experience the ultimate combat sports training in Da Nang. Personalized programs, pro coaches, and international standard facility.",
+                hero_btn1: "<span class='relative z-10'>Get 1-on-1 Promo</span><i class='fas fa-arrow-right absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all'></i>", 
+                hero_btn2: "View Pricing",
+                hero_coach_title: "1-ON-1 COACHING", hero_coach_desc: "Detailed technical correction to ensure rapid progress every session.",
+                album_title: "OUR <span class='text-red-600'>FACILITY.</span>", album_desc: "International standard training space, modern equipment, and a civilized martial arts community.",
+                services_title: "OUR <span class='text-red-600'>PROGRAMS</span>",
+                services_boxing_title: "BOXING", services_boxing_desc: "Comprehensive boxing skills. Train your reflexes, hand techniques, and footwork.",
+                services_muay_title: "MUAY THAI", services_muay_desc: "The art of eight limbs. Maximize calorie burn and explosive strikes with Fairtex bags.",
+                services_pt_title: "1-ON-1 PERSONAL TRAINING", services_pt_desc: "Fully customized program. Direct coaching to accelerate your path to your goals.",
+                
+                // Pricing section
+                pricing_title: "OUR <span class='text-red-600'>MENU</span>", pricing_subtitle: "The best choice for you",
+                pkg_pt_badge: "Recommended", pkg_pt_title: "1-on-1 Personal Training", 
+                pkg_pt_li1: "Direct 1-on-1 training with our professional coach.", pkg_pt_li2: "Customized lesson plan suited for your physical condition.", pkg_pt_li3: "First trial session for only 200,000 VND.",
+                pkg_pt_price_lbl: "Training Cost", pkg_pt_duration: "/ 1 Session", pkg_btn: "Register Now",
+                
+                menu_group_schedule: "Group Class Schedule", menu_group_boxing: "Boxing Class", menu_group_muay: "Muay Thai Class", menu_time: "At 18:00", menu_group_note: "* Standard group class size: 10 - 15 members.",
+                menu_group_price_title: "Group Class Packages", menu_group_opt1: "Join 1 class (3 sessions/week)", menu_group_opt2: "Join 2 classes (6 sessions/week)",
+
+                form_title: "JOIN THE <br><span class='text-red-600 italic'>SQUAD.</span>",
+                form_desc: "Fill in the details below. Our system will analyze your metrics and a Coach will contact you to design your exclusive training path.",
+                feat_ai: "24/7 AI Analysis", feat_ai_desc: "Auto-suggests nutrition and workouts.",
+                feat_gift: "1-on-1 Trial Promo", feat_gift_desc: "Experience personal training for just 200k VND.",
+                form_header: "MEMBER INFO & METRICS",
+                opt_placeholder: "Service of interest? *", opt_pt: "1-on-1 Personal Training (Recommended)", opt_class_box: "Boxing Group Class", opt_class_muay: "Muay Thai Group Class", opt_health: "General Fitness / Weight Loss",
+                lbl_weight: "Weight (kg) *", lbl_height: "Height (cm) *",
+                btn_analyze: "Send Request & Calc BMI",
+                res_bmi: "BMI Score", res_status: "Condition", res_success: "Success! Data sent to Station. A coach will call you soon.",
+                map_title: "PRIME <span class='text-red-600'>LOCATION</span>", map_desc: "Located in Son Tra, heart of Da Nang, the Station features spacious parking, secure areas, and top-tier facilities."
+            }
+        };
+
+        let currentLang = 'vi';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            
+            // Toggle Active styling for language buttons
+            if (lang === 'vi') {
+                document.getElementById('btn-vi').className = "text-red-500 font-bold transition";
+                document.getElementById('btn-en').className = "text-zinc-500 hover:text-white transition";
+            } else {
+                document.getElementById('btn-en').className = "text-red-500 font-bold transition";
+                document.getElementById('btn-vi').className = "text-zinc-500 hover:text-white transition";
+            }
+        }
+
+        // --- 2. SCROLL REVEAL ---
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
+                if (elementTop < windowHeight - 100) reveals[i].classList.add("active");
             }
         }
         window.addEventListener("scroll", reveal);
         window.addEventListener("load", reveal);
 
-        // Navbar Shadow on Scroll
+        // Navbar Shadow
         window.addEventListener("scroll", () => {
             const nav = document.getElementById('mainNav');
-            if (window.scrollY > 50) {
-                nav.classList.add('glass', 'py-2');
-                nav.classList.remove('py-4');
-            } else {
-                nav.classList.remove('glass', 'py-2');
-                nav.classList.add('py-4');
-            }
+            if (window.scrollY > 50) { nav.classList.add('glass', 'py-2'); nav.classList.remove('py-4'); } 
+            else { nav.classList.remove('glass', 'py-2'); nav.classList.add('py-4'); }
         });
 
-        // Lightbox Logic
+        // --- 3. LIGHTBOX ---
         function openLightbox(element) {
-            const imgSrc = element.querySelector('img').src;
-            document.getElementById('lightbox-img').src = imgSrc;
+            document.getElementById('lightbox-img').src = element.querySelector('img').src;
             document.getElementById('lightbox').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Stop scrolling
+            document.body.style.overflow = 'hidden';
         }
-
         function closeLightbox() {
             document.getElementById('lightbox').style.display = 'none';
-            document.body.style.overflow = 'auto'; // Resume scrolling
+            document.body.style.overflow = 'auto';
         }
 
-        // Form Switching
-        function switchForm(type) {
-            const bmi = document.getElementById('form-bmi');
-            const contact = document.getElementById('form-contact');
-            const tabBmi = document.getElementById('tab-bmi');
-            const tabContact = document.getElementById('tab-contact');
+        // --- 4. SMART FORM ---
+        const SCRIPT_URL = 'DÁN_LINK_GOOGLE_APP_SCRIPT_CỦA_BẠN_VÀO_ĐÂY'; 
+        const form = document.getElementById('smart-form');
+        const submitBtn = document.getElementById('submit-btn');
 
-            if(type === 'bmi') {
-                bmi.classList.remove('hidden');
-                contact.classList.add('hidden');
-                tabBmi.className = "flex-1 font-black uppercase tracking-widest text-xs text-red-600 border-b-2 border-red-600 pb-4 transition-all";
-                tabContact.className = "flex-1 font-black uppercase tracking-widest text-xs text-zinc-500 pb-4 transition-all";
-            } else {
-                bmi.classList.add('hidden');
-                contact.classList.remove('hidden');
-                tabContact.className = "flex-1 font-black uppercase tracking-widest text-xs text-red-600 border-b-2 border-red-600 pb-4 transition-all";
-                tabBmi.className = "flex-1 font-black uppercase tracking-widest text-xs text-zinc-500 pb-4 transition-all";
-            }
-        }
-
-        // BMI Calculation
-        function calculateBMI() {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get inputs
             const w = parseFloat(document.getElementById('weight').value);
             const h = parseFloat(document.getElementById('height').value) / 100;
+            const goal = document.getElementById('goal').value;
+            const isEn = currentLang === 'en';
 
-            if (!w || !h) {
-                showToast("Vui lòng nhập đầy đủ thông số!");
-                return;
-            }
+            // Start Analysis Animation
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = isEn ? '<i class="fas fa-spinner fa-spin"></i> Processing...' : '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            document.getElementById('scan-line').style.display = 'block';
+            document.getElementById('ai-result-box').classList.add('hidden');
 
-            const bmi = (w / (h * h)).toFixed(1);
-            let status = "";
-            let color = "";
+            setTimeout(() => {
+                // Stop Animation
+                document.getElementById('scan-line').style.display = 'none';
+                submitBtn.innerHTML = isEn ? '<i class="fas fa-check"></i> Sent to Coach' : '<i class="fas fa-check"></i> Đã Gửi Yêu Cầu';
 
-            if (bmi < 18.5) { status = "Cần tăng cân/cơ"; color = "text-yellow-400"; }
-            else if (bmi < 24.9) { status = "Cơ thể lý tưởng"; color = "text-green-400"; }
-            else if (bmi < 29.9) { status = "Cần giảm mỡ"; color = "text-orange-400"; }
-            else { status = "Béo phì"; color = "text-red-600"; }
+                // Calculate BMI
+                const bmi = (w / (h * h)).toFixed(1);
+                let status = "", color = "";
 
-            document.getElementById('bmi-value').innerText = bmi;
-            document.getElementById('bmi-status').innerText = status;
-            document.getElementById('bmi-status').className = `text-xl font-black italic uppercase ${color}`;
-            document.getElementById('bmi-result').classList.remove('hidden');
+                if (bmi < 18.5) { status = isEn ? "Underweight" : "Gầy / Cần Tăng Cân"; color = "text-yellow-400"; }
+                else if (bmi < 24.9) { status = isEn ? "Ideal / Fit" : "Cân đối / Lý tưởng"; color = "text-green-400"; }
+                else if (bmi < 29.9) { status = isEn ? "Overweight" : "Thừa cân / Cần Giảm Mỡ"; color = "text-orange-400"; }
+                else { status = isEn ? "Obese" : "Béo phì / Nguy cơ cao"; color = "text-red-600"; }
 
-            document.getElementById('hidden-bmi').value = bmi;
-            document.getElementById('hidden-status').value = status;
-            
-            setTimeout(() => { switchForm('contact'); }, 1500);
-        }
+                // Update UI with BMI results
+                document.getElementById('res-bmi-val').innerText = bmi;
+                document.getElementById('res-status-val').innerText = status;
+                document.getElementById('res-status-val').className = `text-xl font-black italic uppercase ${color}`;
+                document.getElementById('ai-result-box').classList.remove('hidden');
 
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.className = "fixed top-24 right-10 bg-red-600 text-white px-8 py-4 rounded-lg shadow-2xl z-[200] font-black uppercase tracking-widest text-xs animate-pulse";
-            t.innerText = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
-        }
+                // Prepare Data for Google Sheets
+                document.getElementById('hidden-bmi').value = bmi;
+                document.getElementById('hidden-status').value = status;
+                document.getElementById('hidden-ai').value = "Selected Goal: " + goal;
 
-        function alertModal(msg) {
-            showToast(msg);
-        }
+                // Fire Fetch to Google Sheet
+                if(SCRIPT_URL && SCRIPT_URL !== 'DÁN_LINK_GOOGLE_APP_SCRIPT_CỦA_BẠN_VÀO_ĐÂY') {
+                    fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form)})
+                        .catch(err => console.error("Sheet Error: ", err));
+                } else {
+                    console.log("Demo Mode: Form data simulated. Add SCRIPT_URL to send to sheets.");
+                }
 
-        // Form Submission
-        const SCRIPT_URL = ''; 
-        const form = document.getElementById('lead-form');
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            
-            if (!SCRIPT_URL) {
-                showToast("Dữ liệu đã ghi nhận (Demo)");
-                document.getElementById('success-msg').classList.remove('hidden');
-                form.classList.add('hidden');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = "ĐANG GỬI...";
-
-            fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form)})
-                .then(res => {
-                    document.getElementById('success-msg').classList.remove('hidden');
-                    form.classList.add('hidden');
-                })
-                .catch(err => {
-                    showToast("Lỗi kết nối. Vui lòng thử lại!");
-                    btn.disabled = false;
-                    btn.innerText = "Xác nhận đăng ký";
-                });
+            }, 1500); 
         });
     </script>
 </body>
