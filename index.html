@@ -45,9 +45,46 @@
         .fire-border::before { content: ""; position: absolute; inset: -2px; background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000); background-size: 400%; z-index: -1; filter: blur(5px); animation: glowing 20s linear infinite; opacity: 0; transition: opacity .3s ease-in-out; border-radius: 8px; }
         .fire-border:hover::before { opacity: 0.5; }
         @keyframes glowing { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
+
+        /* Preloader */
+        #preloader { transition: opacity 0.5s ease-out; }
+        #preloader.hidden-pre { opacity: 0; pointer-events: none; }
+
+        /* Floating Actions */
+        .floating-action { animation: pulse-shadow 2s infinite; }
+        @keyframes pulse-shadow { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
+        
+        /* FAQ Accordion */
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .faq-item.active .faq-answer { max-height: 500px; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
     </style>
 </head>
 <body class="overflow-x-hidden">
+
+    <!-- Preloader VIP -->
+    <div id="preloader" class="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center">
+        <div class="w-20 h-20 bg-red-600 rounded-lg rotate-45 flex items-center justify-center animate-pulse mb-8">
+            <i class="fas fa-fist-raised text-white -rotate-45 text-4xl"></i>
+        </div>
+        <h2 class="text-3xl font-oswald italic tracking-widest text-white"><span class="text-red-600">LOADING</span> STATION...</h2>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-6 right-6 z-[90] flex flex-col gap-4">
+        <!-- Zalo -->
+        <a href="https://zalo.me/0905418862" target="_blank" class="w-14 h-14 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg hover:scale-110 transition floating-action" style="animation-delay: 0s;">
+            <i class="font-bold text-sm">Zalo</i>
+        </a>
+        <!-- Messenger -->
+        <a href="#" target="_blank" class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl shadow-lg hover:scale-110 transition floating-action" style="animation-delay: 0.5s;">
+            <i class="fab fa-facebook-messenger"></i>
+        </a>
+        <!-- Phone -->
+        <a href="tel:0905418862" class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg hover:scale-110 transition floating-action" style="animation-delay: 1s;">
+            <i class="fas fa-phone-alt"></i>
+        </a>
+    </div>
 
     <!-- Lightbox Modal -->
     <div id="lightbox" onclick="closeLightbox()">
@@ -67,9 +104,9 @@
             
             <div class="hidden lg:flex items-center gap-8 font-bold uppercase text-[11px] tracking-[0.2em]">
                 <a href="#home" class="nav-link hover:text-red-600 transition" data-i18n="nav_home">Trang chủ</a>
-                <a href="#gallery" class="nav-link hover:text-red-600 transition" data-i18n="nav_gallery">Album ảnh</a>
                 <a href="#services" class="nav-link hover:text-red-600 transition" data-i18n="nav_services">Đào tạo</a>
-                <a href="#pricing" class="nav-link hover:text-red-600 transition" data-i18n="nav_pricing">Gói tập & Menu</a>
+                <a href="#coaches" class="nav-link hover:text-red-600 transition" data-i18n="nav_coaches">Huấn luyện viên</a>
+                <a href="#pricing" class="nav-link hover:text-red-600 transition" data-i18n="nav_pricing">Gói tập</a>
                 
                 <!-- Language Toggle -->
                 <div class="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1 ml-4 border border-white/20">
@@ -78,7 +115,7 @@
                     <button onclick="setLang('en')" id="btn-en" class="text-zinc-500 hover:text-white transition">EN</button>
                 </div>
 
-                <a href="#calculator" class="bg-red-600 px-6 py-3 rounded-sm hover:bg-white hover:text-black transition-all duration-300 mma-shadow" data-i18n="nav_trial">Đăng ký Tập thử</a>
+                <a href="#calculator" class="bg-red-600 px-6 py-3 rounded-sm hover:bg-white hover:text-black transition-all duration-300 mma-shadow" data-i18n="nav_trial">Trải nghiệm thử</a>
             </div>
             
             <button class="lg:hidden text-2xl" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
@@ -187,20 +224,6 @@
                         <i class="fas fa-expand text-2xl text-white"></i>
                     </div>
                 </div>
-
-                <div class="col-span-1 md:col-span-2 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 350ms;" onclick="openLightbox(this)">
-                    <img src="17961097892698959979.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1564415051543-cb73a7469033?auto=format&fit=crop&q=80&w=600';" alt="Punching Bags and Buffet" class="w-full h-full aspect-[2/1] object-cover group-hover:scale-105 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                        <i class="fas fa-expand text-2xl text-white"></i>
-                    </div>
-                </div>
-
-                <div class="col-span-1 md:col-span-2 row-span-1 overflow-hidden group relative cursor-pointer reveal border border-white/5" style="transition-delay: 400ms;" onclick="openLightbox(this)">
-                    <img src="19873229823532291848.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517438476312-10d79c67750d?auto=format&fit=crop&q=80&w=600';" alt="Fairtex Bags" class="w-full h-full aspect-[2/1] object-cover group-hover:scale-105 transition duration-1000">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                        <i class="fas fa-expand text-2xl text-white"></i>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -252,11 +275,55 @@
         </div>
     </section>
 
-    <!-- Detailed Pricing & Menu Section (Restructured for 1-1 Focus) -->
-    <section id="pricing" class="py-24 bg-zinc-950 border-y border-white/10 relative overflow-hidden">
+    <!-- PRO COACHES SECTION (VIP FEATURE) -->
+    <section id="coaches" class="py-24 bg-zinc-950 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
+                <div>
+                    <span class="text-red-600 font-bold uppercase tracking-widest mb-4 block underline decoration-2 underline-offset-8">Meet The Experts</span>
+                    <h2 class="text-5xl md:text-7xl font-black italic font-oswald text-white" data-i18n="coaches_title">ĐỘI NGŨ <span class="text-red-600">HLV PRO</span></h2>
+                </div>
+                <p class="text-zinc-400 max-w-sm mt-6 md:mt-0 text-sm font-medium" data-i18n="coaches_desc">
+                    Yếu tố then chốt làm nên chất lượng tại MMA DANANG STATION chính là đội ngũ HLV dày dặn kinh nghiệm thực chiến và sư phạm.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Coach 1 -->
+                <div class="relative group overflow-hidden rounded-lg reveal border border-white/10 mma-shadow">
+                    <img src="4428589172692898035.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1561532325-7d5231a2dede?auto=format&fit=crop&q=80&w=600';" alt="Head Coach" class="w-full aspect-[3/4] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 translate-y-4 group-hover:translate-y-0 transition duration-500">
+                        <span class="text-red-500 font-bold text-xs uppercase tracking-widest mb-1 block" data-i18n="coach_role1">Head Coach / Striking</span>
+                        <h3 class="text-2xl font-black text-white font-oswald uppercase mb-2">Master Trainer</h3>
+                        <p class="text-zinc-300 text-sm opacity-0 group-hover:opacity-100 transition duration-500" data-i18n="coach_exp1">Hơn 10 năm kinh nghiệm huấn luyện thi đấu chuyên nghiệp. Chứng chỉ quốc tế.</p>
+                    </div>
+                </div>
+                <!-- Coach Placeholder 2 -->
+                <div class="relative group overflow-hidden rounded-lg reveal border border-white/10" style="transition-delay: 100ms;">
+                    <img src="https://images.unsplash.com/photo-1599058917765-a780eda07a3e?auto=format&fit=crop&q=80&w=600" alt="Coach 2" class="w-full aspect-[3/4] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 translate-y-4 group-hover:translate-y-0 transition duration-500">
+                        <span class="text-red-500 font-bold text-xs uppercase tracking-widest mb-1 block" data-i18n="coach_role2">BJJ / Grappling Coach</span>
+                        <h3 class="text-2xl font-black text-white font-oswald uppercase mb-2">Expert Coach</h3>
+                        <p class="text-zinc-300 text-sm opacity-0 group-hover:opacity-100 transition duration-500" data-i18n="coach_exp2">Đai đen BJJ, chuyên gia huấn luyện địa chiến và tự vệ thực tế.</p>
+                    </div>
+                </div>
+                <!-- Coach Placeholder 3 -->
+                <div class="relative group overflow-hidden rounded-lg reveal border border-white/10" style="transition-delay: 200ms;">
+                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=600" alt="Coach 3" class="w-full aspect-[3/4] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 translate-y-4 group-hover:translate-y-0 transition duration-500">
+                        <span class="text-red-500 font-bold text-xs uppercase tracking-widest mb-1 block" data-i18n="coach_role3">Strength & Conditioning</span>
+                        <h3 class="text-2xl font-black text-white font-oswald uppercase mb-2">Fitness Coach</h3>
+                        <p class="text-zinc-300 text-sm opacity-0 group-hover:opacity-100 transition duration-500" data-i18n="coach_exp3">Chuyên gia dinh dưỡng và thể lực, giúp tối ưu hóa sức mạnh cốt lõi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Pricing & Menu Section -->
+    <section id="pricing" class="py-24 bg-black relative overflow-hidden">
         <!-- Background elements -->
         <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517438476312-10d79c67750d?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-5"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950"></div>
 
         <div class="max-w-6xl mx-auto px-6 relative z-10">
             <div class="text-center mb-16 reveal">
@@ -364,7 +431,7 @@
     </section>
 
     <!-- Unified Smart Form & AI BMI Section -->
-    <section id="calculator" class="py-32 relative bg-zinc-950 bg-pattern">
+    <section id="calculator" class="py-32 relative bg-zinc-950 bg-pattern border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-16 items-start">
             
             <!-- Left Info -->
@@ -443,7 +510,7 @@
                     <input type="hidden" id="hidden-ai" name="aiAnalysis">
 
                     <button type="submit" id="submit-btn" class="w-full bg-red-600 text-white font-black py-5 mt-4 hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-sm shadow-[0_0_20px_rgba(255,0,0,0.3)] flex justify-center items-center gap-3">
-                        <i class="fas fa-paper-plane"></i> <span data-i18n="btn_analyze">Gửi Yêu Cầu & Tính BMI</span>
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="btn_analyze">Trải nghiệm thử & Tính BMI</span>
                     </button>
                 </form>
 
@@ -467,6 +534,46 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION (VIP FEATURE) -->
+    <section class="py-24 bg-black border-t border-white/5">
+        <div class="max-w-4xl mx-auto px-6 reveal">
+            <h2 class="text-4xl md:text-5xl font-black text-center text-white font-oswald mb-12 uppercase" data-i18n="faq_title">CÂU HỎI <span class="text-red-600">THƯỜNG GẶP</span></h2>
+            
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="faq-item bg-zinc-900 border border-white/10 rounded-sm">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none" onclick="toggleFaq(this)">
+                        <span class="font-bold text-white text-lg" data-i18n="faq_q1">Tôi chưa từng tập võ bao giờ thì có theo được không?</span>
+                        <i class="fas fa-chevron-down text-red-500 faq-icon transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-0 text-zinc-400 text-sm leading-relaxed">
+                        <p class="pb-6" data-i18n="faq_a1">Hoàn toàn được! 80% hội viên tại Station bắt đầu từ con số 0. HLV sẽ thiết kế giáo án từ cơ bản nhất, tập trung chỉnh sửa tư thế để đảm bảo an toàn và hiệu quả cho bạn.</p>
+                    </div>
+                </div>
+                <!-- FAQ 2 -->
+                <div class="faq-item bg-zinc-900 border border-white/10 rounded-sm">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none" onclick="toggleFaq(this)">
+                        <span class="font-bold text-white text-lg" data-i18n="faq_q2">Gói 1 kèm 1 có bao gồm sử dụng tủ đồ (locker) không?</span>
+                        <i class="fas fa-chevron-down text-red-500 faq-icon transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-0 text-zinc-400 text-sm leading-relaxed">
+                        <p class="pb-6" data-i18n="faq_a2">Chắc chắn rồi. Gói Huấn Luyện 1-1 là dịch vụ cao cấp nhất của chúng tôi. Bạn sẽ được sử dụng toàn bộ tiện ích VIP bao gồm Locker riêng, phòng tắm chuẩn khách sạn và khu vực nghỉ ngơi.</p>
+                    </div>
+                </div>
+                <!-- FAQ 3 -->
+                <div class="faq-item bg-zinc-900 border border-white/10 rounded-sm">
+                    <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none" onclick="toggleFaq(this)">
+                        <span class="font-bold text-white text-lg" data-i18n="faq_q3">Buổi trải nghiệm 200k sẽ diễn ra như thế nào?</span>
+                        <i class="fas fa-chevron-down text-red-500 faq-icon transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-0 text-zinc-400 text-sm leading-relaxed">
+                        <p class="pb-6" data-i18n="faq_a3">Buổi Trial kéo dài 60 phút. Bạn sẽ được đo Inbody, HLV chuyên nghiệp sẽ phân tích thể trạng và trực tiếp hướng dẫn bạn 1 buổi tập thực tế (Boxing/Muay) để bạn cảm nhận chất lượng dịch vụ trước khi quyết định.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -517,10 +624,23 @@
     </footer>
 
     <script>
+        // --- PRELOADER ---
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').classList.add('hidden-pre');
+            }, 800); // Giữ preloader 0.8s để tạo cảm giác VIP
+        });
+
+        // --- FAQ TOGGLE ---
+        function toggleFaq(btn) {
+            const item = btn.parentElement;
+            item.classList.toggle('active');
+        }
+
         // --- 1. MULTI-LANGUAGE SYSTEM (EN/VI) ---
         const translations = {
             vi: {
-                nav_home: "Trang chủ", nav_gallery: "Album ảnh", nav_services: "Đào tạo", nav_pricing: "Gói tập & Menu", nav_trial: "Trải nghiệm thử",
+                nav_home: "Trang chủ", nav_gallery: "Album ảnh", nav_services: "Đào tạo", nav_coaches: "Huấn luyện viên", nav_pricing: "Gói tập & Menu", nav_trial: "Trải nghiệm thử",
                 hero_badge: "Đà Nẵng's #1 Fighting Station", hero_title: "BẢN LĨNH <br><span class='text-red-600 italic'>CHIẾN BINH.</span>",
                 hero_desc: "Trải nghiệm hệ thống đào tạo võ thuật thực chiến đỉnh cao tại Đà Nẵng. Giáo án cá nhân hóa, HLV chuyên nghiệp, cơ sở vật chất chuẩn quốc tế.",
                 hero_btn1: "<span class='relative z-10'>Nhận Ưu Đãi 1-1</span><i class='fas fa-arrow-right absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all'></i>", 
@@ -532,6 +652,11 @@
                 services_boxing_title: "BOXING", services_boxing_desc: "Kỹ năng quyền anh toàn diện. Rèn luyện phản xạ, kỹ thuật tay, di chuyển linh hoạt trên sàn đấu.",
                 services_fit_title: "PHYSICAL STRENGTH", services_fit_desc: "Hệ thống tạ hiện đại, máy chạy bộ và khu vực thể lực chuyên biệt giúp tăng cường sức bền và sức mạnh cốt lõi.",
                 
+                coaches_title: "ĐỘI NGŨ <span class='text-red-600'>HLV PRO</span>", coaches_desc: "Yếu tố then chốt làm nên chất lượng tại MMA DANANG STATION chính là đội ngũ HLV dày dặn kinh nghiệm thực chiến và sư phạm.",
+                coach_role1: "Head Coach / Striking", coach_exp1: "Hơn 10 năm kinh nghiệm huấn luyện thi đấu chuyên nghiệp. Chứng chỉ quốc tế.",
+                coach_role2: "BJJ / Grappling Coach", coach_exp2: "Đai đen BJJ, chuyên gia huấn luyện địa chiến và tự vệ thực tế.",
+                coach_role3: "Strength & Conditioning", coach_exp3: "Chuyên gia dinh dưỡng và thể lực, giúp tối ưu hóa sức mạnh cốt lõi.",
+
                 // Pricing section
                 pricing_title: "MENU <span class='text-red-600'>DỊCH VỤ</span>", pricing_subtitle: "Lựa chọn tốt nhất dành cho bạn",
                 pkg_pt_badge: "Dịch Vụ Trọng Tâm", pkg_pt_title: "Gói Tập Ưu Đãi Kèm 1-1", 
@@ -550,10 +675,16 @@
                 lbl_weight: "Cân nặng (kg) *", lbl_height: "Chiều cao (cm) *",
                 btn_analyze: "Trải nghiệm thử & Tính BMI",
                 res_bmi: "Chỉ số BMI", res_status: "Thể trạng", res_success: "Đăng ký thành công! Dữ liệu đã gửi về Station. HLV sẽ gọi cho bạn sớm.",
+
+                faq_title: "CÂU HỎI <span class='text-red-600'>THƯỜNG GẶP</span>",
+                faq_q1: "Tôi chưa từng tập võ bao giờ thì có theo được không?", faq_a1: "Hoàn toàn được! 80% hội viên tại Station bắt đầu từ con số 0. HLV sẽ thiết kế giáo án từ cơ bản nhất, tập trung chỉnh sửa tư thế để đảm bảo an toàn và hiệu quả cho bạn.",
+                faq_q2: "Gói 1 kèm 1 có bao gồm sử dụng tủ đồ (locker) không?", faq_a2: "Chắc chắn rồi. Gói Huấn Luyện 1-1 là dịch vụ cao cấp nhất của chúng tôi. Bạn sẽ được sử dụng toàn bộ tiện ích VIP bao gồm Locker riêng, phòng tắm chuẩn khách sạn và khu vực nghỉ ngơi.",
+                faq_q3: "Buổi trải nghiệm 200k sẽ diễn ra như thế nào?", faq_a3: "Buổi Trial kéo dài 60 phút. Bạn sẽ được đo Inbody, HLV chuyên nghiệp sẽ phân tích thể trạng và trực tiếp hướng dẫn bạn 1 buổi tập thực tế (Boxing/Muay) để bạn cảm nhận chất lượng dịch vụ trước khi quyết định.",
+
                 map_title: "VỊ TRÍ <span class='text-red-600'>ĐẮC ĐỊA</span>", map_desc: "Tọa lạc ngay tại Sơn Trà, trung tâm Đà Nẵng, Station được trang bị bãi đậu xe rộng rãi, khu vực an toàn và cơ sở vật chất chuẩn quốc tế."
             },
             en: {
-                nav_home: "Home", nav_gallery: "Gallery", nav_services: "Programs", nav_pricing: "Pricing", nav_trial: "Experience Now",
+                nav_home: "Home", nav_gallery: "Gallery", nav_services: "Programs", nav_coaches: "Coaches", nav_pricing: "Pricing", nav_trial: "Experience Now",
                 hero_badge: "Da Nang's #1 Fighting Station", hero_title: "WARRIOR <br><span class='text-red-600 italic'>SPIRIT.</span>",
                 hero_desc: "Experience the ultimate combat sports training in Da Nang. Personalized programs, pro coaches, and international standard facility.",
                 hero_btn1: "<span class='relative z-10'>Get 1-on-1 Promo</span><i class='fas fa-arrow-right absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all'></i>", 
@@ -565,6 +696,11 @@
                 services_boxing_title: "BOXING", services_boxing_desc: "Comprehensive boxing skills. Train your reflexes, hand techniques, and footwork.",
                 services_fit_title: "PHYSICAL STRENGTH", services_fit_desc: "Modern weight system, treadmills, and dedicated fitness area to boost your stamina and core strength.",
                 
+                coaches_title: "PRO <span class='text-red-600'>COACHES</span>", coaches_desc: "The key to MMA DANANG STATION's quality is our team of highly experienced and pedagogical coaches.",
+                coach_role1: "Head Coach / Striking", coach_exp1: "Over 10 years of professional fighting and coaching experience. International certificates.",
+                coach_role2: "BJJ / Grappling Coach", coach_exp2: "BJJ Black Belt, expert in ground fighting and practical self-defense.",
+                coach_role3: "Strength & Conditioning", coach_exp3: "Nutrition and fitness expert, helping you optimize your core strength.",
+
                 // Pricing section
                 pricing_title: "OUR <span class='text-red-600'>MENU</span>", pricing_subtitle: "The best choice for you",
                 pkg_pt_badge: "Recommended", pkg_pt_title: "1-on-1 Personal Training", 
@@ -583,6 +719,12 @@
                 lbl_weight: "Weight (kg) *", lbl_height: "Height (cm) *",
                 btn_analyze: "Experience Now & Calc BMI",
                 res_bmi: "BMI Score", res_status: "Condition", res_success: "Success! Data sent to Station. A coach will call you soon.",
+
+                faq_title: "FREQUENTLY ASKED <span class='text-red-600'>QUESTIONS</span>",
+                faq_q1: "I have never trained martial arts before, can I join?", faq_a1: "Absolutely! 80% of our members start from zero. Our coaches will design a beginner-friendly plan focusing on correct posture for safety and efficiency.",
+                faq_q2: "Does the 1-on-1 package include locker usage?", faq_a2: "Definitely. 1-on-1 Coaching is our premium service. You will have full access to VIP amenities including a private locker, hotel-standard showers, and the lounge area.",
+                faq_q3: "How does the 200k trial session work?", faq_a3: "The trial lasts 60 minutes. You will get an Inbody scan, professional condition analysis, and a 1-on-1 practical training session so you can experience our quality before deciding.",
+
                 map_title: "PRIME <span class='text-red-600'>LOCATION</span>", map_desc: "Located in Son Tra, heart of Da Nang, the Station features spacious parking, secure areas, and top-tier facilities."
             }
         };
